@@ -1,0 +1,94 @@
+{
+  "name": "local-tts-studio",
+  "version": "1.0.0",
+  "description": "Local AI Text to Speech Studio",
+  "main": "./out/main/index.js",
+  "author": "Ngự Võ",
+  "private": true,
+  "scripts": {
+    "dev": "electron-vite dev -w",
+    "build": "electron-vite build",
+    "build:mac": "electron-builder --mac",
+    "build:mac-universal": "electron-builder --mac --universal",
+    "build:win": "electron-builder --win",
+    "build:win-x64": "electron-builder --win --x64",
+    "build:win-ia32": "electron-builder --win --ia32",
+    "build:win-arm64": "electron-builder --win --arm64",
+    "build:linux": "electron-builder --linux AppImage deb",
+    "typecheck": "tsc --noEmit -p tsconfig.node.json && tsc --noEmit -p tsconfig.web.json",
+    "lint": "eslint . --ext .ts,.tsx",
+    "test": "ELECTRON_RUN_AS_NODE=1 electron ./node_modules/vitest/vitest.mjs run",
+    "preview": "electron-vite preview",
+    "rebuild": "node node_modules/@electron/rebuild/lib/cli.js -f -w better-sqlite3"
+  },
+  "dependencies": {
+    "better-sqlite3": "^11.10.0",
+    "clsx": "^2.1.1",
+    "lucide-react": "^0.468.0",
+    "tailwind-merge": "^2.5.5",
+    "uuid": "^11.1.1",
+    "wavesurfer.js": "^7.12.12",
+    "ws": "^8.21.3",
+    "zod": "^3.24.1",
+    "zustand": "^5.0.2"
+  },
+  "devDependencies": {
+    "@electron/rebuild": "^3.7.2",
+    "@types/better-sqlite3": "^7.6.13",
+    "@types/node": "^22.10.2",
+    "@types/react": "^18.3.18",
+    "@types/react-dom": "^18.3.5",
+    "@types/uuid": "^10.0.0",
+    "@types/ws": "^8.18.1",
+    "@typescript-eslint/eslint-plugin": "^8.18.1",
+    "@typescript-eslint/parser": "^8.18.1",
+    "@vitejs/plugin-react": "^4.3.4",
+    "autoprefixer": "^10.4.20",
+    "electron": "^33.2.1",
+    "electron-builder": "^25.1.8",
+    "electron-vite": "^2.3.0",
+    "eslint": "^8.57.1",
+    "eslint-plugin-react": "^7.37.2",
+    "eslint-plugin-react-hooks": "^5.1.0",
+    "postcss": "^8.4.49",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "tailwindcss": "^3.4.16",
+    "typescript": "^5.7.2",
+    "vite": "^5.4.11",
+    "vitest": "^2.1.8"
+  },
+  "build": {
+    "appId": "com.localtts.studio",
+    "productName": "Local TTS Studio",
+    "copyright": "Copyright © 2026 Ngự Võ. All rights reserved.",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "out/**/*",
+      "package.json"
+    ],
+    "mac": {
+      "category": "public.app-category.productivity",
+      "target": [
+        { "target": "dmg", "arch": ["x64", "arm64", "universal"] },
+        { "target": "zip", "arch": ["x64", "arm64", "universal"] }
+      ],
+      "minimumSystemVersion": "12.0.0"
+    },
+    "win": {
+      "target": [
+        { "target": "nsis", "arch": ["x64", "ia32", "arm64"] },
+        { "target": "portable", "arch": ["x64", "ia32", "arm64"] }
+      ]
+    },
+    "linux": {
+      "target": [
+        { "target": "AppImage", "arch": ["x64", "arm64"] },
+        { "target": "deb", "arch": ["x64", "arm64"] }
+      ],
+      "category": "AudioVideo"
+    }
+  }
+}
