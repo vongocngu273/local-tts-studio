@@ -169,3 +169,66 @@ stateDiagram-v2
 
 - **Max Fix Attempts**: 3 iterations for any single bug ticket.
 - **Circuit Breaker**: If 3 attempts fail to pass QA gates, the bug is marked `ESCALATION_REQUIRED`. Orchestrator halts automated loops, performs root-cause architectural analysis, and resets the contract.
+
+---
+
+## 7. Documentation Sync Rule (Source of Truth Maintenance)
+
+To prevent documentation drift, the codebase enforces an automated documentation sync gate immediately following successful QA validation.
+
+### Canonical Workflow:
+```text
+Feature Request / Bug
+         │
+         ▼
+Backend Specialist + Frontend Specialist
+         │
+         ▼
+Integrated Build
+         │
+         ▼
+QA Independent Validation
+         │
+         ▼
+   QA STATUS = PASS
+         │
+         ▼
+DOCUMENTATION SYNC GATE (Mandatory)
+         │
+         ▼
+    Git Commit
+```
+
+> [!CAUTION]
+> **No Documentation Drift Policy**: Under NO circumstances should a git commit be made with `QA STATUS = PASS` without executing the Documentation Sync Gate. If code changes, documentation MUST change in the same atomic commit.
+
+### Orchestrator Determination Checklist:
+After every `QA STATUS = PASS`, the Orchestrator must evaluate:
+- [ ] **Did architecture change?** (Services, pipelines, queue, audio, process model)
+- [ ] **Did feature status change?** (`DONE`, `PARTIAL`, `PLACEHOLDER`, `TODO`, `BROKEN`)
+- [ ] **Did database change?** (Migrations, tables, indexes, schema version)
+- [ ] **Did IPC change?** (Channels, payloads, preload methods, event broadcasts)
+- [ ] **Did UI change?** (Screens, routes, components, design tokens, UX states)
+- [ ] **Did agent/skill configuration change?** (Roster, tools, installed skills)
+- [ ] **Did tests change?** (Test counts, test files, coverage additions)
+
+If **YES** to any question: Update the relevant documents immediately before committing.
+
+### Document Update Ownership Matrix:
+
+| Document | Primary Owner | Reviewer / Sign-off | Scope |
+| :--- | :--- | :--- | :--- |
+| `docs/PROJECT_STATE.md` | **Main Orchestrator** | All Specialists | High-level status, tech stack, inventory, gates, risks |
+| `docs/ARCHITECTURE.md` | **Backend Specialist** | Main Orchestrator | Deep technical architecture, DB, IPC, pipelines, security |
+| `docs/FEATURE_MATRIX.md` | **QA Specialist** | Main Orchestrator | Granular scan of all feature statuses (DONE/PARTIAL/etc.) |
+| `docs/UI_SYSTEM.md` | **Frontend UX/UI Specialist** | QA Specialist | UI routes, screens, component catalog, design tokens, states |
+
+### Documentation Pre-Commit Checklist:
+Before declaring any task or contract complete, verify:
+- [ ] `docs/PROJECT_STATE.md` reflects current Git commit, test count, and status.
+- [ ] `docs/FEATURE_MATRIX.md` statuses are verified against working code.
+- [ ] `docs/ARCHITECTURE.md` is updated if services, DB, or IPC were modified.
+- [ ] `docs/UI_SYSTEM.md` is updated if UI components or routes were modified.
+- [ ] Actual Git commit hash is recorded (`git rev-parse --short HEAD`).
+- [ ] Automated test counts match real runner output (`npm test`).
+- [ ] Known issues and technical debt are documented truthfully.
